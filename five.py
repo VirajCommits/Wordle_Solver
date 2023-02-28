@@ -17,11 +17,21 @@ with open('5-letter-legible-words.txt', 'r') as file:
     # Read the contents of the file into a string
     contents = file.read().split()
 sign_list=[]
+all_dashes=[]
+all_crosses =[]
+pos=0
+reduce_space=[]
+quit=False
 while(True):
     # Print the contents of the file
     guess =input("Enter word:")
+    if guess == "q":
+        quit=True
+        break
     # guess = "ready"
     signs = input("Enter Sign:")
+
+    
 
     # signs = "__._X"
     count=0
@@ -48,7 +58,7 @@ while(True):
                     if name[j] == guess[i] and j!=i:
                         point+=1
                         break
-
+    
 
 
         if counter == count and point==point_counter:
@@ -58,10 +68,57 @@ while(True):
         counter=0
         point=0
 
+    for i in range(len(signs)):
+        if signs[i] == "X":
+            all_crosses.append(guess[i])
+    
+    for i in range(len(signs)):
+        
+        if signs[i] == "_" and guess[i] not in all_crosses:
+            all_dashes.append(guess[i])
+
+    initial = (len(possible))
+    for letter in all_dashes:
+        while(pos<len(possible)):
+            name = possible[pos]
+            if letter in name:
+                possible.remove(name)
+            else:
+                pos+=1
+
+    
+        pos=0
+    all_dashes=[]
+    all_crosses=[]
+
+    final=(len(possible))
+    reduce_percent = (initial-final)/initial*100
+    reduce_percent = round(reduce_percent,2)
+    if reduce_percent==100.0:
+        break
     print("Possible words:")
+    pos=1
     for name in possible:
-        print(name,guess)
+        print(pos,":",name)
+        pos+=1
+
     contents=possible
+    reduce_space.append(reduce_percent)
+    print("Reduced Search space by",reduce_percent,"%","(from",initial,"words to",final,"words)")
+if quit:
+    print("-"*100)
+    print("Thanks for using me!!")
+    print("-"*100)
+
+else:   
+    print("-"*100)
+    print("No options available")
+    print("-"*100)
+
+
+for percents in reduce_space:
+    print("#"*int(percents/2.0),(percents),"%")
+
 
 
 
